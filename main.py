@@ -42,25 +42,21 @@ async def check_booking_availability(url, cookies):
     r.raise_for_status()
 
     soup = BeautifulSoup(r.text, features="html.parser")
-    # print(soup.prettify())
 
     for buchbar in soup.find_all("td.buchbar"):
-        send_message(text=buchbar.__str__)
-        print("buchbar:", buchbar)
+        send_message(text=str(buchbar))
+        logger.info("buchbar:", buchbar)
 
-    nicht_count = 0
-    for nichtbuchbar in soup.select("td.nichtbuchbar"):
-        nicht_count += 1
-
+    nicht_count = len(soup.select("td.nichtbuchbar"))
     if nicht_count == 0:
         raise RefreshCookieException
 
-    print(nicht_count)
+    logger.info(nicht_count)
 
     if random.randint(0, 100) == 50:
-        print(soup.prettify())
+        logger.error(soup.prettify())
 
-    print(datetime.now())
+    logger.info(datetime.now())
 
 
 async def main():
@@ -74,6 +70,7 @@ async def main():
 if __name__ == "__main__":
     while True:
         try:
+            send_message(text=f"bang! {datetime.now()}")
             asyncio.run(main())
         except RefreshCookieException:
-            print("refresh")
+            logger.info("refresh")
