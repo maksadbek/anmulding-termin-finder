@@ -30,7 +30,7 @@ def get_url_and_cookies():
             if link.text == "Termin berlinweit suchen":
                 return link.get("href"), r.cookies
 
-    raise Exception(f"unexpected error {r.status_code}")
+    raise RefreshCookieException(f"unexpected error {r.status_code}")
 
 
 class RefreshCookieException(Exception):
@@ -53,7 +53,7 @@ async def check_booking_availability(url, cookies):
 
     logger.info(nicht_count)
 
-    if random.randint(0, 100) == 50:
+    if random.randint(0, 100) in range(10, 30):
         logger.error(soup.prettify())
 
     logger.info(datetime.now())
@@ -63,6 +63,7 @@ async def main():
     await send_message(text=f"bang! {datetime.now()}")
 
     (url, cookies) = get_url_and_cookies()
+
     while True:
         await check_booking_availability(url, cookies)
         time.sleep(30)
@@ -72,5 +73,5 @@ if __name__ == "__main__":
     while True:
         try:
             asyncio.run(main())
-        except RefreshCookieException:
-            logger.info("refresh")
+        except RefreshCookieException as ex:
+            logger.info(f"Got exception: {ex}. Refreshing cookies")
