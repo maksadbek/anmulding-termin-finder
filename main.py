@@ -75,3 +75,5 @@ if __name__ == "__main__":
             asyncio.run(main())
         except RefreshCookieException as ex:
             logger.info(f"Got exception: {ex}. Refreshing cookies")
+        except requests.exceptions.HTTPError as ex:
+            logger.info(f"Got http exception: {ex}. Refreshing cookies")
