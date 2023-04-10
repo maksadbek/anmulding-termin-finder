@@ -60,8 +60,9 @@ async def check_booking_availability(url, cookies):
 
 
 async def main():
-    (url, cookies) = get_url_and_cookies()
+    await send_message(text=f"bang! {datetime.now()}")
 
+    (url, cookies) = get_url_and_cookies()
     while True:
         await check_booking_availability(url, cookies)
         time.sleep(30)
@@ -70,7 +71,6 @@ async def main():
 if __name__ == "__main__":
     while True:
         try:
-            send_message(text=f"bang! {datetime.now()}")
             asyncio.run(main())
         except RefreshCookieException:
             logger.info("refresh")
