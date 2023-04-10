@@ -70,10 +70,14 @@ async def main():
 
 
 if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+
     while True:
         try:
-            asyncio.run(main())
+            loop.run_until_complete(main())
         except RefreshCookieException as ex:
             logger.info(f"Got exception: {ex}. Refreshing cookies")
         except requests.exceptions.HTTPError as ex:
             logger.info(f"Got http exception: {ex}. Refreshing cookies")
+        finally:
+            loop.close()
