@@ -44,7 +44,7 @@ async def check_booking_availability(url, cookies):
     soup = BeautifulSoup(r.text, features="html.parser")
 
     for buchbar in soup.find_all("td.buchbar"):
-        send_message(text=str(buchbar))
+        await send_message(text=str(buchbar))
         logger.info("buchbar:", buchbar)
 
     nicht_count = len(soup.select("td.nichtbuchbar"))
