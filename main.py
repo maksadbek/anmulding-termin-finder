@@ -43,9 +43,13 @@ async def check_booking_availability(url, cookies):
 
     soup = BeautifulSoup(r.text, features="html.parser")
 
-    for buchbar in soup.find_all("td.buchbar"):
-        await send_message(text=str(buchbar))
-        logger.info("buchbar:", buchbar)
+    for buchbar in soup.select("td.buchbar > a"):
+        label = buchbar.get("aria-label")
+        href = buchbar.get("href")
+
+        await send_message(text=f"{label} https://service.berlin.de{href}")
+
+        logger.info(f"buchbar: {buchbar}")
 
     nicht_count = len(soup.select("td.nichtbuchbar"))
     if nicht_count == 0:
@@ -66,11 +70,11 @@ async def main():
 
     while True:
         await check_booking_availability(url, cookies)
-        time.sleep(30)
+        time.sleep(60)
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
 
     while True:
         try:
